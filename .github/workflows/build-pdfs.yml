@@ -1,0 +1,71 @@
+name: Build PDFs
+
+on:
+  push:
+    branches: [main]
+
+# Не даём двум прогонам одновременно коммитить PDF друг поверх друга.
+concurrency:
+  group: build-pdfs-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install fonts used by the preambles
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            fonts-liberation fonts-noto-core fonts-noto-extra fonts-libertinus || true
+
+      - name: Install Typst
+        env:
+          TYPST_VERSION: "0.15.1"
+        run: |
+          set -euo pipefail
+          curl -fsSL "https://github.com/typst/typst/releases/download/v${TYPST_VERSION}/typst-x86_64-unknown-linux-musl.tar.xz" -o typst.tar.xz
+          tar -xf typst.tar.xz
+          sudo mv "typst-x86_64-unknown-linux-musl/typst" /usr/local/bin/typst
+          typst --version
+
+      - name: Determine changed files
+        id: diff
+        run: |
+          set -euo pipefail
+          before="${{ github.event.before }}"
+          if [[ -z "$before" || "$before" =~ ^0+$ ]] || ! git cat-file -e "$before" 2>/dev/null; then
+            # Первый пуш в ветку / история недоступна — сравниваем с пустым
+            # деревом, т.е. считаем изменённым абсолютно всё.
+            base="4b825dc642cb6eb9a060e54bf8d69288fbee4904"
+          else
+            base="$before"
+          fi
+          git diff --name-only "$base" "${{ github.sha }}" > changed_files.txt
+          echo "Изменённые файлы:"
+          cat changed_files.txt
+
+      - name: Rebuild affected PDFs
+        run: python3 scripts/ci-build.py changed_files.txt
+
+      - name: Commit regenerated PDFs
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          # Имена предметов содержат пробелы, поэтому ищем все каталоги pdf/
+          # через find, а не полагаемся на шелл-глоббинг в пути.
+          find . -type d -name pdf -not -path './.git/*' -print0 | xargs -0 -r git add
+          if git diff --cached --quiet; then
+            echo "PDF не изменились."
+            exit 0
+          fi
+          git commit -m "ci: пересобрать изменённые PDF [skip ci]"
+          git push

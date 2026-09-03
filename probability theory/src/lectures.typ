@@ -1,0 +1,119 @@
+#import sys.inputs.preamble: *
+
+#heading(level: 1, numbering: none, outlined: false)[Литература]
+
+#note[Ширяев: "Университетский курс"]
+
+#pagebreak()
+
+= Первая лекция
+
+== Дискретное вероятностное пространство
+
+#defn(title: "дискретное вероятностное пространство")[
+  Конечное или счётное пространство, состоящее из элементов любой природы. Каждому элементу приписывается число, сумма которых равна 1.
+]
+
+$ Omega = { omega_1, omega_2, ..., omega_N }, quad N <= +infinity $
+$ omega_1 tilde p_1, omega_2 tilde p_2, ..., omega_N tilde p_N, quad p_i > 0 $
+$ sum_(i=1)^N p_i = 1 $
+
+#defn[
+  Событие — это любое подмножество в $Omega$.
+]
+
+$ forall A subset.eq Omega - "это событие" $
+$ A = {omega_7} - "событие", quad A = {omega_3, omega_5, omega_9} - "составное событие" $
+
+#key[$ P(A) = sum_(i: omega_i in A) p_i $]
+
+$ P(nothing) = 0, quad P({omega_7}) = p_7 $
+$ P(A) = p_3 + p_5 + p_9, quad P(Omega) = 1 $
+
+- $nothing$ — невозможное событие
+- $Omega$ — достоверное событие
+
+#note[
+  События называются #text(weight: "bold")[несовместными], если $P(A B) = nothing$.
+]
+
+#divider()
+
+=== Операции с событиями
+
++ $A subset.eq Omega -> overline(A) = Omega \\ A$ — «не А», $quad P(overline(A))=1-P(A)$
++ $A,B subset.eq Omega, quad A B = A inter B$ — пересечение событий
++ $A,B subset.eq Omega, quad A union B$ — объединение событий
++ $A,B subset.eq Omega, quad A union B = A + B$, если $P(A B) = 0$
+
+#divider()
+
+$ P(A + B) = P(A) + P(B) $
+$ P(A union B) = P(A) + P(B) - P(A inter B) $
+
+При этом
+$ P(A B) != P(A) P(B) $
+контрпример: $B=overline(A)$.
+
+== Классическая модель
+
+#defn(title: "однородное пространство")[
+  Пространство называется #text(weight: "bold")[однородным], если $N<+infinity$ и $forall i<=N, quad p_i=1/N(Omega)$.
+]
+
+#key[
+  $ P(A) = N(A)/N(Omega) $
+  #v(0.3em)
+  #text(size: 0.85em, style: "italic", fill: muted)[классическая формула вероятности (верно не всегда!)]
+]
+
+$ N(A) - "число исходов в " A $
+$ N(Omega) - "размерность вероятностного пространства" $
+
+#divider()
+
+#text(weight: "bold")[Примеры неправильности модели]
+
+#example(title: "монета")[
+  $ Omega = {"Г", "Р"}, quad "Г" tilde 2/3, quad "Р" tilde 1/3 $
+]
+
+#example(title: "две монеты")[
+  $ Omega = {"ГГ", "ГР", "РГ", "РР"}, quad "ГГ" tilde 1/4, "ГР" tilde 1/4, "РГ" tilde 1/4, "РР" tilde 1/4 $
+  $ A = { "выпал хотя бы один Г" } = {omega_1, omega_2, omega_3}, quad P(A) = 3/4 $
+]
+
+#example(title: "военное подразделение")[
+  $ Omega tilde (x_1, x_2, ..., x_100) $
+  $ N(Omega)=2^100, quad A=(М, М, М, М, ..., М) $
+  $ P(A) = 1/N(Omega)=2^(-100) = 0 $
+
+  Но это не так — если речь о городе, вероятность, что 100 мужчин пройдут друг за другом, не должна считаться нулевой в этой модели.
+]
+
+#divider()
+
+== Условная вероятность
+
+Пусть дано $Omega$, $B subset.eq Omega$, $P(B) > 0$, тогда
+
+#key[
+  $ P(A|B) = (P(A B))/P(B) $
+  #v(0.3em)
+  #text(size: 0.85em, style: "italic", fill: muted)[вероятность, что произойдёт событие A, если произошло событие B]
+]
+
+#example(title: "письмо в ящике")[
+  Стоит стол, в котором 5 ящиков. Есть секретное письмо. Известно, что в каждом ящике с вероятностью $p$ лежит письмо ($P(A)=p$). Человек входит в комнату; открыли 4 ящика — в них нет письма. Какова вероятность, что в последнем ящике есть письмо?
+
+  $ B = {"письма нет в первых четырёх ящиках"} $
+  $ A_k - "письмо в " k"-ом ящике" $
+  $ A - "есть письмо" $
+
+  $ A_1+A_2+A_3+A_4+A_5=A $
+  $ sum P(A_k)=P(A)=p => P(A_k)=p/5 $
+
+  #key[
+    $ P(A_5|B)=(P(A_5 B))/P(A)= P(A_5) / (P(overline(A))+P(A_5)) = (p\/5)/(1-p+p/5)= p/(5-4p) $
+  ]
+]
