@@ -23,13 +23,13 @@
 
 // Счётчики окружений теорем сбрасываются на каждом subsection (level 2) —
 // как в остальных конспектах проекта, а не сквозным счётом по документу.
-#let theorem-counter-names = ("theorem", "defn", "lemma", "consequence", "statement", "remark", "example", "algorithmm", "question", "answer")
+#let theorem-counter-names = ("theorem", "defn", "lemma", "consequence", "statement", "remark", "example", "algorithmm", "question", "answer", "exercise")
 
 #let conspect(
   body,
   course-title: "Теория вероятностей",
   doc-title: "Теория вероятностей. Конспект лекций",
-  author: "Ваня Герунов",
+  author: "Ivan Gerunov",
   header-quote: "",
 ) = {
   set document(title: doc-title, author: author)
@@ -137,6 +137,7 @@
 #let algorithmm(body, title: none) = plain-theorem(body, name: "Алгоритм", counter-name: "algorithmm", title: title)
 #let question(body, title: none) = plain-theorem(body, name: "Вопрос", counter-name: "question", title: title)
 #let answer(body, title: none) = plain-theorem(body, name: "Ответ", counter-name: "answer", title: title)
+#let exercise(body, title: none) = plain-theorem(body, name: "Упражнение", counter-name: "exercise", title: title)
 
 // ===================== Вспомогательные блоки =====================
 
@@ -163,7 +164,7 @@
   lecture-number: none,
   lecture-title: none,
   author: "Ivan Gerunov",
-  author-link: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+  author-link: "t.me/ivanovichelovek",
 ) = align(center)[
   #text(size: 12pt)[Московский физико-технический институт] \
   #text(size: 12pt)[Высшая школа программной инженерии]

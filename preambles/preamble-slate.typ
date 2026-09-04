@@ -98,18 +98,29 @@
   body,
 )
 
-#let defcounter = counter("defn")
-#let defn(body, title: none) = {
-  defcounter.step()
+#let plain-theorem(body, name: "", counter-name: "", title: none) = {
+  let c = counter(counter-name)
+  c.step()
   block(width: 100%, breakable: true)[
     #box(
       fill: ink, inset: (x: 6pt, y: 3pt), radius: 2pt,
-    )[#text(fill: white, size: 0.8em, weight: "bold", font: label-font)[ОПРЕДЕЛЕНИЕ #context defcounter.display()]]
+    )[#text(fill: white, size: 0.8em, weight: "bold", font: label-font)[#upper(name) #context c.display()]]
     #if title != none [ #h(0.3em) #text(style: "italic", fill: muted)[#title]]
     #v(0.3em)
     #body
   ]
 }
+
+#let defn(body, title: none) = plain-theorem(body, name: "Определение", counter-name: "defn", title: title)
+#let theorem(body, title: none) = plain-theorem(body, name: "Теорема", counter-name: "theorem", title: title)
+#let lemma(body, title: none) = plain-theorem(body, name: "Лемма", counter-name: "lemma", title: title)
+#let consequence(body, title: none) = plain-theorem(body, name: "Следствие", counter-name: "consequence", title: title)
+#let statement(body, title: none) = plain-theorem(body, name: "Утверждение", counter-name: "statement", title: title)
+#let remark(body, title: none) = plain-theorem(body, name: "Замечание", counter-name: "remark", title: title)
+#let algorithmm(body, title: none) = plain-theorem(body, name: "Алгоритм", counter-name: "algorithmm", title: title)
+#let question(body, title: none) = plain-theorem(body, name: "Вопрос", counter-name: "question", title: title)
+#let answer(body, title: none) = plain-theorem(body, name: "Ответ", counter-name: "answer", title: title)
+#let exercise(body, title: none) = plain-theorem(body, name: "Упражнение", counter-name: "exercise", title: title)
 
 #let excounter = counter("example")
 #let example(body, title: none) = {

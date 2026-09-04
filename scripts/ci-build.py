@@ -16,22 +16,43 @@
   - любой другой файл внутри <предмет>/src/ -> на всякий случай пересобрать
     все документы предмета.
 """
+import re
 import subprocess
 import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
-# Какие документы есть у предмета и умеет ли он собирать отдельные лекции.
-SUBJECTS = {
-    "aads": {"docs": ["lectures", "seminars"], "per_item": True},
-    "physics": {"docs": ["lectures", "seminars", "labs"], "per_item": False},
-    "probability theory": {"docs": ["lectures", "seminars"], "per_item": False},
-    "acos": {"docs": ["lectures", "seminars"], "per_item": False},
-    "databases": {"docs": ["lectures", "seminars"], "per_item": False},
-    "diff eq": {"docs": ["lectures", "seminars"], "per_item": False},
-    "formal lang": {"docs": ["lectures", "seminars"], "per_item": False},
-}
+ALL_DOCS_RE = re.compile(r"^all_docs=\(([^)]*)\)", re.M)
+
+
+def discover_subjects(root: Path) -> dict[str, dict]:
+    """Какие документы есть у предмета и умеет ли он собирать отдельные лекции.
+
+    Список собирается из файловой системы, а не задаётся здесь константой:
+    раньше он был захардкожен, пережил переименование каталогов
+    («diff eq» -> «diff_eq» и т.п.) и три предмета молча выпали из CI.
+    Источник правды по документам — сам build.sh предмета (его all_docs),
+    ведь именно ему мы потом передаём имя документа аргументом.
+    """
+    subjects: dict[str, dict] = {}
+    for build in sorted(root.glob("*/src/build.sh")):
+        src = build.parent
+        m = ALL_DOCS_RE.search(build.read_text())
+        if not m:
+            print(f"! {build}: не нашёл all_docs=(...), предмет пропущен", file=sys.stderr)
+            continue
+        docs = m.group(1).split()
+        if not docs:
+            continue
+        subjects[src.parent.name] = {
+            "docs": docs,
+            "per_item": (src / "build-one.sh").exists(),
+        }
+    return subjects
+
+
+SUBJECTS = discover_subjects(REPO_ROOT)
 
 
 def run(cmd, cwd):
@@ -71,7 +92,7 @@ def main():
                 doc_targets.update((subject, d) for d in cfg["docs"])
             elif cfg["per_item"] and parts[0] in ("main-single.typ", "build-one.sh"):
                 template_touched.add(subject)
-            elif len(parts) == 2 and parts[0] in ("lectures", "seminars") and parts[1].endswith(".typ"):
+            elif len(parts) == 2 and parts[0] in cfg["docs"] and parts[1].endswith(".typ"):
                 doc = parts[0]
                 doc_targets.add((subject, doc))
                 if cfg["per_item"]:
@@ -89,7 +110,7 @@ def main():
     # по отдельности лекции/семинары предмета
     for subject in template_touched:
         src = REPO_ROOT / subject / "src"
-        for doc in ("lectures", "seminars"):
+        for doc in SUBJECTS[subject]["docs"]:
             d = src / doc
             if d.is_dir():
                 for p in sorted(d.glob("*.typ")):
