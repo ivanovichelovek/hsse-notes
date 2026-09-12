@@ -4,4 +4,3 @@
 // через build-one.sh.
 
 #include "lectures/01.typ"
-#include "lectures/02.typ"
