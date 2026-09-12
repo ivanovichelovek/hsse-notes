@@ -1,7 +1,7 @@
 #import sys.inputs.preamble: *
 #show: conspect.with(course-title: "Алгоритмы", doc-title: "Алгоритмы. Лекции")
 
-#titlepage(title: "Алгоритмы", subtitle: "Лекции")
+#titlepage(title: "Алгоритмы", subtitle: "Лекции", lecturer: "Кулапин Артур")
 
 #pagebreak()
 
