@@ -23,14 +23,13 @@
 
 // Счётчики окружений теорем сбрасываются на каждом subsection (level 2) —
 // как в остальных конспектах проекта, а не сквозным счётом по документу.
-#let theorem-counter-names = ("theorem", "defn", "lemma", "consequence", "statement", "remark", "example", "algorithmm", "question", "answer", "exercise")
+#let theorem-counter-names = ("theorem", "defn", "lemma", "consequence", "statement", "remark", "example", "algorithmm", "question", "answer", "exercise", "problem")
 
 #let conspect(
   body,
   course-title: "Теория вероятностей",
   doc-title: "Теория вероятностей. Конспект лекций",
   author: "Ivan Gerunov",
-  header-quote: "",
 ) = {
   set document(title: doc-title, author: author)
   // documentclass не задаёт "a4paper", geometry тоже не переопределяет
@@ -41,21 +40,29 @@
   // \large=12pt, \Large=14.4pt, \Huge=24.88pt. Заголовок section — \Large,
   // subsection — \large, subsubsection — \normalsize (все жирные).
   //
-  // Шапка — точно по реальному generic-шаблону 3 семестра (packages.tex/
-  // template.tex, одинаковы во всех курсах: aads/acos/databases/diff eq/
-  // formal lang/physics/probability): fancyhf{} + fancyhead[L]=цитата,
-  // fancyhead[R]=\thepage, БЕЗ fancyfoot и без уменьшения шрифта шапки.
+  // Шапка изначально была портирована 1-в-1 из generic-шаблона курсов
+  // (packages.tex/template.tex): fancyhead[L]=цитата (буквальная цитата
+  // руками, отдельным параметром), fancyhead[R]=\thepage. Но этот параметр
+  // (header-quote) никогда и нигде не передавался — ни в одном main-*.typ
+  // всех предметов, поэтому шапка всегда была пустой слева. Остальные 6
+  // стилей (preamble.typ, -academic, -bw, -mono, -print, -slate) давно
+  // показывают в шапке название курса и текущий раздел автоматически, через
+  // query() — приводим dts к тому же поведению вместо мёртвого параметра.
   // \pagenumbering{arabic} стоит сразу после \end{titlepage} — титульник
-  // не входит в нумерацию, первая содержательная страница получает "1".
+  // не входит в нумерацию, первая содержательная страница получает "1"
+  // (этим dts всё ещё отличается от остальных стилей).
   set page(
     paper: "us-letter",
     margin: 2cm,
     numbering: none,
     header: context {
       if counter(page).get().first() > 1 {
+        let sections = query(heading.where(level: 1).before(here()))
+        let title = if sections.len() > 0 { sections.last().body } else { [] }
         grid(
-          columns: (1fr, auto),
-          align(left)[#header-quote],
+          columns: (1fr, 1fr, auto),
+          align(left)[#course-title],
+          align(center)[#title],
           align(right)[#(counter(page).get().first() - 1)],
         )
         v(-0.35em)
@@ -134,7 +141,25 @@
 #let statement(body, title: none) = plain-theorem(body, name: "Утверждение", counter-name: "statement", title: title)
 #let remark(body, title: none) = plain-theorem(body, name: "Замечание", counter-name: "remark", title: title)
 #let example(body, title: none) = plain-theorem(body, name: "Пример", counter-name: "example", title: title)
-#let algorithmm(body, title: none) = plain-theorem(body, name: "Алгоритм", counter-name: "algorithmm", title: title)
+// Алгоритм — отдельно от plain-theorem: тело алгоритма обычно состоит из
+// нумерованных шагов и формул, курсив (как у теорем) их только портит.
+// Оформление в духе LaTeX-пакета algorithm — рамка из тонких линий сверху
+// и снизу шапки, прямой (не курсивный) текст тела.
+#let algorithmm(body, title: none) = {
+  let c = counter("algorithmm")
+  c.step()
+  block(width: 100%, above: 1em, below: 1em, breakable: true)[
+    #line(length: 100%, stroke: 0.6pt + ink)
+    #v(0.35em)
+    #text(weight: "bold")[Алгоритм #context c.display()#if title != none [: #title]]
+    #v(0.35em)
+    #line(length: 100%, stroke: 0.6pt + ink)
+    #v(0.6em)
+    #body
+    #v(0.35em)
+    #line(length: 100%, stroke: 0.6pt + ink)
+  ]
+}
 #let question(body, title: none) = plain-theorem(body, name: "Вопрос", counter-name: "question", title: title)
 #let answer(body, title: none) = plain-theorem(body, name: "Ответ", counter-name: "answer", title: title)
 #let exercise(body, title: none) = plain-theorem(body, name: "Упражнение", counter-name: "exercise", title: title)
@@ -147,6 +172,19 @@
 ]
 
 // Ключевая формула — просто центрирована, без рамки (как \[ ... \] в article)
+// Задача (для семинаров) — в стиле article: жирная шапка, тело прямым
+// (не курсивом), в отличие от теоремоподобных окружений.
+#let probcounter = counter("problem")
+#let problem(body, title: none) = {
+  probcounter.step()
+  block(width: 100%, above: 1em, below: 1em, breakable: true)[
+    #text(weight: "bold")[Задача #context probcounter.display()#if title == none [.]]
+    #if title != none [ #text(style: "italic")[(#title).]]
+    #h(0.4em)
+    #body
+  ]
+}
+
 #let key(body) = align(center)[#body]
 
 // Разделитель — тонкая линия на всю ширину, как обычный \hrule
