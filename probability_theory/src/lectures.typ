@@ -117,3 +117,69 @@ $ N(Omega) - "размерность вероятностного простра
     $ P(A_5|B)=(P(A_5 B))/P(A)= P(A_5) / (P(overline(A))+P(A_5)) = (p\/5)/(1-p+p/5)= p/(5-4p) $
   ]
 ]
+
+= Вторая лекция
+
+#box(stroke: 1pt, inset: 4pt)[$ P(A|B)=(P(A B)/P(B) $]
+
+$P(A_1 + A_2|B) = P(A_1|B) + P(A_2|B)$
+
+$=$                                      $=$// first to first, last to last
+
+$(P((A_1+A_2)B))/(P(B))=(P(A_1 B + A_2 B))/(P(B))=(P(A_1 B) + P(A_2 B))/(P(B))$
+
+$P(A B) = P(A|B) P ( B)$
+
+$=$
+
+$P(B|A)P(A)$
+
+// переоформить
+#defn(title: "формула умножения вероятностей")[
+
+ $P(A_1 ... A_(n-1) A_n) = P(A_n | A_1 ... A_(n-1))P(A_1 ... A_(n-1)) = P(A_n|A_1 ... A_(n-1))P(A_(n-1)|A_(n-2) ... A_1)...P(A_2|A_1)P(A_1)$
+]
+//
+
+#defn(title: "Формула полной вероятности")[
+
+  $\{B_k\}_(k=1)^n$ называется разбиением $Omega$, если $limits(sum)_(k=1)^n B_k = Omega$
+
+  ($limits(union)_(k=1)^n B_k = Omega, B_i B_j = emptyset i != j$)
+
+  $P(A) = limits(sum)_(k=1)^n P(A B_k) = limits(sum)_(k=1)^n P(A|B_k)P(B_k)$ - ФПВ
+
+  $P(B_k) > 0 forall k$
+]
+
+#note[Частный случай: $P(A)=P(A|B)P(B)+P(A|overline(B))P(overline(B)$]
+
+#example()[
+
+  N - билетов, среди них n счастливых билетов, $n << N$
+
+  $A_k$ - k-ый студент взял счастливый билет.
+
+  $P(A_1)=n/N,P(A_2)=P(A_2|A_1)P(A_1)+P(A_2|overline(A_1))P(overline(A_1))=(n-1)/(N-1) dot n/N + n/(N-1) dot (1 - n/N)=n/N$
+
+  $B_1="CC", B_2="HH", B_3="CH"+"HC"$
+
+  $P(A_3)=P(A_3|B_1)P(B_1)+P(A_3|B_2)P(B_2)+P(A_3|B_3)P(B_3)=(n-2)/(N-2) dot ((n-1)/(N-1) dot n/N) + (n)/(N-2) dot ((1-(n/(N-1)) dot (1 - n/N) ) + (n-1)/(N-2) dot (1 - P(B_1) - P(B_2)) = n/N$
+]
+
+#defn(title: "Формула Байеса")[
+
+  $\{B_k\}_(k=1)^n$ называется разбиением $Omega$, если $limits(sum)_(k=1)^n B_k = Omega$
+
+  ($limits(union)_(k=1)^n B_k = Omega, B_i B_j = emptyset i != j$)
+
+  $B_k$ - гипотизы.
+
+  $A$ - знаковое событие
+
+  Дано: $P(B_1), ..., P(B_n)$
+
+  Найти: $P(B_k|A)=?$
+
+  $P(B_k|A)P(A)=P(A|B_k)P(B_k)$ $=>$ $P(B_k|A)=(P(A|B_k)P(B_k))/P(A)=(P(A|B_k)P(B_k))/(limits(sum)_(j=1)^n P(A|B_j)P(B_j))$
+]
