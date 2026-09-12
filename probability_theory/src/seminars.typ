@@ -1,5 +1,11 @@
 #import sys.inputs.preamble: *
 
+// Единый вид для картинок с кругами Эйлера (см. `figures/`, генерируются
+// scratch-скриптом на matplotlib): одинаковая ширина и подпись-формула
+// под картинкой, приглушённая под цвет muted, чтобы не спорить с текстом.
+#let venn-fig(path) = image(path, width: 3.9cm)
+#let venn-cap(body) = text(fill: muted, size: 0.92em)[#body]
+
 // savelovmp@gmail.com - почта преподавателя
 
 = Литература
@@ -39,7 +45,9 @@ E $xi$ = $(xi_1+...+xi_n)/n$ (expectation) - так обозначается с�
 
   Если человек никогда не меняет своё мнение, он может выиграть только в самом начале. То есть в данном случае у него шанс выиграша - $1/3$
 
-  Если человек всегда меняет своё мнение, он выигрывает с веорятностью $2/3$, так как, если бы он не поменял своё мнение, он бы выиграл с вероятностью $1/3$. // TODO: дописать объяснение
+  Если человек всегда меняет своё мнение, он выигрывает с веорятностью $2/3$, так как, если бы он не поменял своё мнение, он бы выиграл с вероятностью $1/3$.
+
+  Объяснение: стратегия "менять" выигрывает ровно тогда, когда первоначальный выбор был *неверным* (то есть попал на пустую дверь), а вероятность этого - $2/3$. Правда в том, что ведущий, открывая пустую дверь, не даёт случайной информации: он всегда открывает пустую дверь из оставшихся двух, поэтому если участник изначально выбрал приз ($1/3$), после смены он проиграет, а если изначально выбрал пустоту ($2/3$), ведущий вынужден открыть единственную оставшуюся пустую дверь, и после смены участник выигрывает.
 ]
 
 #example(title: "n дверей")[
@@ -61,3 +69,221 @@ E $xi$ = $(xi_1+...+xi_n)/n$ (expectation) - так обозначается с�
 #line(length: 100%)
 
 #pagebreak()
+
+= Второй семинар
+
+== Система множеств. Вероятностное пространство
+
+Случайный эксперимент. N исходов. Обозначим их $omega_1, ..., omega_n$. $Omega={omega_1, ..., omega_n}$ - пространство элементарных исходов.
+
+#defn()[
+
+  Элементы $omega in Omega$ называют элементарными исходами.
+]
+
+Сегодня рассмотрим только случаи, когда $|Omega|$ конечно. Событие $A$ - подмножество $Omega$.
+
+$A={"на кубике выпало чётное"}={omega_2, omega_4, omega_6}$
+
+$B={"на кубике выпало">=3}={omega_3, omega_4, omega_5, omega_6}$
+
+$A inter B = {omega_4, omega_6}$
+
+$A union B = Omega\\{omega_1}$
+
+#problem()[
+
+  Записать $A$ и $B$ произошли, а $C$ - нет.
+
+  $A inter B inter overline(C)$
+]
+
+#problem()[
+
+  Проверить $(A union B) inter C = A C union B C$
+
+  Есть 3 способа:
+
+  *1. Круги Эйлера.*
+
+  #align(center)[
+    #grid(
+      columns: 3,
+      column-gutter: 0.8em,
+      row-gutter: 0.5em,
+      align: center + bottom,
+      venn-fig("figures/p2-aub.png"), venn-fig("figures/p2-c.png"), venn-fig("figures/p2-lhs.png"),
+      venn-cap[$A union B$], venn-cap[$C$], venn-cap[$(A union B) inter C$],
+      venn-fig("figures/p2-ac.png"), venn-fig("figures/p2-bc.png"), venn-fig("figures/p2-rhs.png"),
+      venn-cap[$A C$], venn-cap[$B C$], venn-cap[$A C union B C$],
+    )
+  ]
+
+  *2. Таблица истинности* (1 - элемент принадлежит множеству, 0 - не принадлежит):
+
+  #align(center)[
+    #table(
+      columns: 6,
+      align: center,
+      [$A$], [$B$], [$C$], [$(A union B) inter C$], [$A C$], [$B C$],
+      [0], [0], [0], [0], [0], [0],
+      [0], [0], [1], [0], [0], [0],
+      [0], [1], [0], [0], [0], [0],
+      [0], [1], [1], [1], [0], [1],
+      [1], [0], [0], [0], [0], [0],
+      [1], [0], [1], [1], [1], [0],
+      [1], [1], [0], [0], [0], [0],
+      [1], [1], [1], [1], [1], [1],
+    )
+  ]
+
+  В каждой строке $(A union B) inter C$ совпадает с $A C union B C$ (то есть с "хотя бы одна из последних двух колонок = 1"), значит равенство верно.
+
+  *3. Рассуждения.*
+
+  Пусть $x in (A union B) inter C$. Тогда $x in A union B$ и $x in C$. Из $x in A union B$ следует $x in A$ или $x in B$. Рассмотрим оба случая:
+  - если $x in A$, то вместе с $x in C$ получаем $x in A C$, значит $x in A C union B C$;
+  - если $x in B$, то аналогично $x in B C$, значит $x in A C union B C$.
+
+  Значит $(A union B) inter C subset.eq A C union B C$.
+
+  Обратно, пусть $x in A C union B C$. Тогда $x in A C$ или $x in B C$.
+  - если $x in A C$, то $x in A$ и $x in C$, значит $x in A union B$ и $x in C$, то есть $x in (A union B) inter C$;
+  - если $x in B C$, то аналогично $x in (A union B) inter C$.
+
+  Значит $A C union B C subset.eq (A union B) inter C$. Из двух включений следует равенство.
+]
+
+== Термин алгебра
+
+#defn(title: "Топология")[
+
+  Топология - совокупность открытых множеств.
+]
+
+#defn()[
+
+  Система множеств $AA$ называется алгеброй, если выполнены следующие 3 свойства:
+
+  1. $Omega in AA$
+  2. $A in AA$, $B in AA$ $=>$ $A union B in AA$
+  3. $A in AA$ $=>$ $overline(A) in AA$
+]
+
+#exercise()[
+
+  $A, B in AA => A inter B in AA$
+
+  (Док-во: $Omega in AA$ $=>$ $overline(Omega) = emptyset in AA)$)
+]
+
+#exercise()[
+
+  $A inter B = overline(overline(A) union overline(B))$
+
+  Док-во:
+
+  $C = D <=> overline(C) = overline(D)$
+
+  $=>$ осталось доказать, что $overline(A inter B) = overline(A) union overline(B)$. Доказательство очевидно
+]
+
+Примеры алгебры:
+
+1. Кубик: $AA = {{emptyset}, {omega_1}, ..., {omega_6}, {omega_1, omega_2}, {omega_1, omega_3}, ..., {omega_5, omega_6}, {omega_1, omega_2, omega_3}, ..., {omega_1, omega_2, omega_3, omega_4, omega_5, omega_6}}$
+2. (более общий случай) $2^Omega$
+3. ${emptyset, Omega}$
+
+#exercise()[
+
+  $(A union B) inter (A union overline(B))$ - упростить
+
+  Ответ: $= A$
+
+  Опять же есть 3 способа решения:
+
+  *1. Круги Эйлера.*
+
+  #align(center)[
+    #grid(
+      columns: 3,
+      column-gutter: 0.8em,
+      row-gutter: 0.5em,
+      align: center + bottom,
+      venn-fig("figures/p3-aub.png"), venn-fig("figures/p3-aubbar.png"), venn-fig("figures/p3-result.png"),
+      venn-cap[$A union B$], venn-cap[$A union overline(B)$], venn-cap[$A$],
+    )
+  ]
+
+  *2. Таблица истинности:*
+
+  #align(center)[
+    #table(
+      columns: 4,
+      align: center,
+      [$A$], [$B$], [$A union B$], [$A union overline(B)$],
+      [0], [0], [0], [1],
+      [0], [1], [1], [0],
+      [1], [0], [1], [1],
+      [1], [1], [1], [1],
+    )
+  ]
+
+  Пересечение колонок $A union B$ и $A union overline(B)$ равно 1 только в последней строке ($A=1$), что совпадает со столбцом $A$.
+
+  *3. Рассуждения.* Раскроем скобки по дистрибутивности ($union$ относительно $inter$):
+
+  $(A union B) inter (A union overline(B)) = A union (B inter overline(B)) = A union emptyset = A$
+]
+
+== $sigma$-алгебра
+
+#defn()[
+
+  Пусть $FF$ - совокупность подмножеств в $Omega$.
+
+  Система множеств $FF$ называется $sigma$-алгеброй, если
+  1. $Omega in FF$
+  2. $A in FF => overline(A) in FF$
+  3. $A_1, A_2, ..., in FF => limits(union)_(i=1)^infinity A_i in F$ // подписать, что A_1, A_2, ... счётно
+]
+
+$FF - sigma-"алгебра" => FF - "алгебра"$
+
+Доказательство: п.1 и п.2 очевидны, для п.3 заметим, что $emptyset in FF$, $A_1=A, A_2=B, A_3=emptyset, A_4=emptyset, ...$ Тогда $limits(union)_(i=1)^infinity A_i = A union B$
+
+#remark()[
+  $FF-sigma$-алгебра, $A_1, A_2, ... in FF => inter A_i in FF$
+]
+
+#statement()[
+
+  Конечное объединение полуинтервалов: $Omega = (0, 1]$ $AA = {(a_1, b_1] union.sq ..., (a_n, b_n], "где" 0 <= a_i < b_i <= 1}$ - не $sigma-$алгебра. Док-во: $A_i=(1-1/i, 1]$ in $FF$, $limits(union)_(i=1)^infinity A_i in.not FF$
+
+]
+
+== Вероятность
+
+#defn(title: "Вероятностная мера (вероятность)")[
+
+Пусть дано пространство элементарных исходов $Omega$ и $sigma-$алгебра на нём. Функция $P$, действующая из $FF$ в $RR$ называется вероятностной мерой (или просто вероятностью), если
+
+1. $P(Omega) = 1$
+2. $forall A in FF P(A) >= 0$
+3. ($sigma$-аддитивность) $forall A_1, A_2, ... in FF$ т.ч. $A_i inter A_j = emptyset, i != j$ выполнено равенство $P(limits(union)_(i=1)^infinity A_i) = limits(sum)_(i=1)^infinity P(A_i)$
+]
+
+Свойства:
+0. $A_1, ..., A_n$ не пересекаются $=>$ $P(union.sq A_i) = 1$
+1. $P(A)<=1$
+2. $P(A)=1<=>A=Omega$
+3. $P(emptyset)=0$
+4. монотонность: $A subset.eq B => P(A) <= P(B)$
+5. $P(A union B) = P(A) + P(B) - P(A B)$
+6. формула включений-исключений $P(limits(union)_(i=1)^n A_i)=limits(sum)_(i=1)^n P(A_i) - limits(sum)_(i < j) P(A_i A_j) + ... (-1)^(n-1)P(A_1 ... A_n)$
+7. $A_(i+1) < A_i limits(inter)_(i=1)^infinity = emptyset => limits(lim)_(i->infinity)P(A_i)=0$
+
+
+#defn(title:"Вероятностное пространство")[
+  Тройка $(Omega, FF, P)$ называется вероятностным пространством.
+]
