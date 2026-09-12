@@ -135,6 +135,25 @@
   ]
 }
 
+// Задача (для семинаров) — экономная разметка: висячая шапка
+// вразрядку и тонкая линейка слева.
+#let probcounter = counter("problem")
+#let problem(body, title: none) = {
+  probcounter.step()
+  block(
+    width: 100%,
+    stroke: (left: 1.2pt + ink),
+    inset: (left: 12pt, rest: 4pt),
+    breakable: true,
+  )[
+    #set par(first-line-indent: 0em)
+    #text(weight: "bold", tracking: 0.08em, size: 0.9em)[ЗАДАЧА #context probcounter.display()]
+    #if title != none [ #text(fill: muted)[ — #title]]
+    #linebreak()
+    #body
+  ]
+}
+
 #let key(body) = align(center)[
   #block(
     stroke: (top: 0.9pt + ink, bottom: 0.9pt + ink),

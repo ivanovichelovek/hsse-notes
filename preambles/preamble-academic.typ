@@ -130,6 +130,27 @@
   ]
 }
 
+// Задача (для семинаров) — в академическом духе: разрядка в шапке
+// и тонкие линейки сверху и снизу, без заливки.
+#let probcounter = counter("problem")
+#let problem(body, title: none) = {
+  probcounter.step()
+  block(
+    width: 100%,
+    inset: (y: 7pt),
+    above: 1.1em,
+    below: 1.1em,
+    stroke: (top: 0.6pt + accent-mid, bottom: 0.6pt + accent-mid),
+    breakable: true,
+  )[
+    #set par(first-line-indent: 0em)
+    #text(weight: "bold", fill: accent, tracking: 0.08em, size: 0.9em)[ЗАДАЧА #context probcounter.display()]
+    #if title != none [ #text(style: "italic", fill: muted)[ — #title]]
+    #v(0.25em)
+    #body
+  ]
+}
+
 #let key(body) = align(center)[
   #block(
     fill: accent-light,

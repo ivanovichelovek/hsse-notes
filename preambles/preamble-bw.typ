@@ -145,6 +145,34 @@
   ]
 }
 
+// Задача (для семинаров) — чёрная плашка с номером: заметно и при
+// чёрно-белой печати.
+#let probcounter = counter("problem")
+#let problem(body, title: none) = {
+  probcounter.step()
+  block(
+    width: 100%,
+    stroke: 0.7pt + accent-mid,
+    inset: 0pt,
+    radius: 4pt,
+    breakable: true,
+  )[
+    #block(
+      width: 100%,
+      fill: ink,
+      inset: (x: 10pt, y: 5pt),
+      radius: (top: 4pt),
+      above: 0pt,
+      below: 0pt,
+    )[
+      #set par(first-line-indent: 0em)
+      #text(fill: white, weight: "bold", size: 0.92em)[Задача #context probcounter.display()]
+      #if title != none [ #h(0.4em) #text(fill: luma(215), style: "italic", size: 0.92em)[#title]]
+    ]
+    #block(width: 100%, fill: luma(250), inset: 10pt, above: 0pt, below: 0pt, radius: (bottom: 4pt))[#body]
+  ]
+}
+
 #let key(body) = align(center)[
   #block(
     fill: white,

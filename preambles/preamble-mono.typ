@@ -132,6 +132,26 @@
   ]
 }
 
+// Задача (для семинаров) — рамка потолще и шапка вразрядку,
+// чтобы отличалась от примеров.
+#let probcounter = counter("problem")
+#let problem(body, title: none) = {
+  probcounter.step()
+  block(
+    width: 100%,
+    fill: accent-light,
+    stroke: (left: 3pt + ink),
+    inset: 10pt,
+    breakable: true,
+  )[
+    #set par(first-line-indent: 0em)
+    #text(weight: "bold", tracking: 0.1em, size: 0.88em)[ЗАДАЧА #context probcounter.display()]
+    #if title != none [ #text(fill: muted)[ — #title]]
+    #v(0.25em)
+    #body
+  ]
+}
+
 #let key(body) = align(center)[
   #block(
     stroke: (top: 0.7pt + ink, bottom: 0.7pt + ink),

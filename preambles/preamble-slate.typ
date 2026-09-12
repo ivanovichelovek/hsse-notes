@@ -142,6 +142,30 @@
   ]
 }
 
+// Задача (для семинаров) — плашка контрастного цвета, чтобы не путать
+// с теоремами и примерами.
+#let problem-accent = rgb("#b45309")
+#let probcounter = counter("problem")
+#let problem(body, title: none) = {
+  probcounter.step()
+  block(
+    width: 100%,
+    fill: rgb("#fdf6ec"),
+    stroke: (left: 3pt + problem-accent),
+    inset: 10pt,
+    radius: (right: 4pt),
+    breakable: true,
+  )[
+    #set par(first-line-indent: 0em)
+    #box(
+      fill: problem-accent, inset: (x: 6pt, y: 3pt), radius: 2pt,
+    )[#text(fill: white, size: 0.8em, weight: "bold", font: label-font)[ЗАДАЧА #context probcounter.display()]]
+    #if title != none [ #h(0.3em) #text(style: "italic", fill: muted)[#title]]
+    #v(0.3em)
+    #body
+  ]
+}
+
 #let key(body) = align(center)[
   #block(
     fill: accent,

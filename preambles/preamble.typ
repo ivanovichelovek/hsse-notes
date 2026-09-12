@@ -152,6 +152,37 @@
 }
 
 // Ключевая формула / теорема — в рамке, по центру
+// Задача (для семинаров) — нумеруется автоматически, оформление отличное
+// от теорем: тёплая рамка и шапка-плашка с номером.
+#let problem-accent = rgb("#8f3d1d")
+#let problem-light = rgb("#fbf1ec")
+#let probcounter = counter("problem")
+#let problem(body, title: none) = {
+  probcounter.step()
+  block(
+    width: 100%,
+    fill: problem-light,
+    stroke: 0.8pt + rgb("#e2c4b5"),
+    inset: 0pt,
+    radius: 4pt,
+    breakable: true,
+  )[
+    #block(
+      width: 100%,
+      fill: problem-accent,
+      inset: (x: 10pt, y: 5pt),
+      radius: (top: 4pt),
+      above: 0pt,
+      below: 0pt,
+    )[
+      #set par(first-line-indent: 0em)
+      #text(fill: white, weight: "bold", size: 0.92em)[Задача #context probcounter.display()]
+      #if title != none [ #h(0.4em) #text(fill: rgb("#f0d8cd"), style: "italic", size: 0.92em)[#title]]
+    ]
+    #block(width: 100%, inset: 10pt, above: 0pt, below: 0pt)[#body]
+  ]
+}
+
 #let key(body) = align(center)[
   #block(
     fill: white,
