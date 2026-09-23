@@ -2,17 +2,24 @@
 
 = Семинар 2
 
-#defn(title: "Класс языков P")[
+== Классы P и NP
 
-  $P = limits(union)_(c=1)^infinity "DTIME"\(n^c\)$
+#defn(title: "Класс языков P")[
+  $ P = limits(union.big)_(c=1)^infinity "DTIME"(n^c) $
 ]
 
 #defn(title: "Класс языков NP")[
-
-  $"NP" = limits(union)_(c=1)^infinity "NTIME"\(n^c\)$
-
-  $"NP"$ - класс таких языков $L$, что существует ДМТ $V(x, s)$, работающая за полином от $ |x|:$$ cases(forall x in L exists s V(x,s)=1, forall x in.not L forall s V(x, s) = 0) $
+  $ "NP" = limits(union.big)_(c=1)^infinity "NTIME"(n^c) $
 ]
+
+Эквивалентно NP можно определить через проверку сертификата:
+
+#defn(title: "Сертификатное определение NP")[
+  $L in "NP"$, если существует ДМТ $V(x, s)$, работающая за полином от $|x|$, такая что
+  $ cases(forall x in L quad exists s quad V(x, s) = 1, forall x in.not L quad forall s quad V(x, s) = 0) $
+]
+
+То есть у слов из языка есть короткое доказательство принадлежности $s$ (сертификат), а $V$ (верификатор) его быстро проверяет.
 
 #pagebreak()
 
