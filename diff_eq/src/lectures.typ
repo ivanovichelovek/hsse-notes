@@ -301,3 +301,131 @@ $a_1, a_2, ..., a_n in RR (CC)$ $y: RR -> CC$
 //#theorem(title: "")[
 //
 //]
+
+= Третья лекция
+
+1) $a_0 y^((n))+a_1 y^((n-1))+...+a_(n-1)y'+a_n y=0$, $a_0 != 0; a_0, a_1, ..., a_n in CC$
+
+2) $chi(lambda) = a_0 lambda^n+a_1 lambda^(n-1)+...+a_n$ - характеристический многолчен
+
+== Дифференциальные операторы, порождаемые многочленами
+
+$f in C^infinity (RR), D=d/(d x) : C^infinity(RR)->C^infinity(RR)$
+
+$D(f)=d/(d x)f(x)$, $D^k = D circle .. circle D = (d^k)/(d x^k), k in NN$
+
+$I=D^0=I d$, $I(f)=f$
+
+$P(lambda)=p_0 lambda^n + p_1 lambda^(n-1)+...+p_(n-1)^lambda + p_n$, $p_0, p_1, ..., p_n in CC$
+
+$P(D)=p_0 D^n + p_1 D^(n-1) + ... + p_(n-1)D + p_n I$
+
+#lemma()[
+  Пусть $P, Q и R - $многочлены:
+
+  $P(lambda) = Q(lambda) dot R(lambda)$. Тогда
+
+  $P(D) = Q(D) circle R(D)$
+
+  Док-во:
+
+  Доказательство следует из справедливости следующих равенств:
+
+  1. $(a D^k) circle (d D^m) = a b D^(k + m)$, $a, b in CC$
+  2. $D^k circle (R_1 + r_2)(D) = D^k circle R_1(D) + D^k circle R_2(D)$
+  3. $(Q_1+Q_2)(D) circle R(D) = Q_1(D) circle R(D) + Q_2(D) circle R(D)$
+
+  $F in C^infinity (RR)=>((A D^k) circle (b D^m))f(x)=a D^k(b f^((m))(x)=a b f^((m + k))(x)=(a b D^(m+k))(f(x))$
+]
+
+#consequence()[
+  Пусть $Q$ и $R$ - произвольные многочлены. Тогда $Q(D) circle R(D)=R(D) circle Q(D)$.
+]
+
+#theorem(title: "формула Двига")[
+  Пусть $f in C(RR), lambda in CC, P - "многочлен"$. Тогда $P(D)(e^(lambda x)f(x))=e^(lambda x)P(D + lambda I)(f(x))$.
+
+  Док-во:
+
+  Заметим, что $D(e^(lambda x)f(x))=lambda e^(lambda x)f(x) = e^(lambda x)f'(x)=e^(lambda x)(D + lambda I)(f(x))$
+
+  Покажем, что $D^k(e^(lambda x)f(x))=e^(lambda x)(D + lambda I)^k(f(x))$
+
+  Докажем по индукции:
+
+  База $k=1$ -проверена
+
+  Пусть равенство верно до $k-1$. Проверим для $k$:
+
+  $D^n (e^(lambda x)f(x)) = D circle D^(k-1)(e^(lambda x)f(x))=D(e^(lambda x) dot (D + lambda I)^(k-1)(f(x)))=e^(lambda x)(D + lambda I)^k(f(x))$
+
+  Тогда, если $P(lambda)=limits(sum)_(k=0)^n p_k lambda^(n-k)$, то $P(D)=limits(sum)_(k=0)^n p_k D^(n-k)=>P(D)(e^(lambda x)f(x))=limits(sum)_(k=0)^n p_k D^(n-k)(c^(lambda x)f(x))=limits(sum)_(k=0)^n p_k e^(lambda x)(D + lambda I)^(n-k)(f(x))=e^(lambda x)P(D + lambda I)(f(x))$
+]
+
+#lemma(title: "*")[
+  Пусть $x_0 in RR$  - фикс и $P(D)(e^(mu x) x^g)|_(x=x_0) = 0 forall j=0, 1, ..., k$
+
+  Тогда $mu in CC$ - это корень многочлена $P$ кратности $s > k$.
+
+  Замечание: $P(D)(e^(mu x))=e^(mu x) P(D + mu I)(1)=e^(mu x) dot P(mu)$
+
+  Док-во:
+
+  Индукция по k.
+
+  База: $k=0$: $P(D)(e^(mu x))|_(x=x_0)=e^(mu x_0)P(mu)=0=>P(mu)=0=>mu-"корень" P(lambda)=0$, т.е. $s>=0$
+
+  Шаг инфукции: Пусть утверждение справедливо для $k$. Покажем, что оно справедливо для $k+1$.
+
+  Пусть $q_1,q_2,...,q_n$ - корни уравнения $P$.
+
+  Из предположения следует, что $mu$ - корень кратности $s >= k + 1$. Без ограничения общности, тчо $q_1, q_2, ..., q_(k+1)=mu$. Тогда $P(lambda)=p_0(lambda - q_n)dot(lambda-q_(n-1)) dot ... dot (lambda-q_(k+2))(lambda - mu)^(k+1)=> P(D)(e^(mu x) x^(k+1))=e^(mu x)P(D + lambda I)(x^(k+1))=e^(mu x)Q(D+mu I)circle D^(k+1)(x^(k+1))$, где $Q(lambda)=p_0(lambda-q_n)(lambda - q(n-1))dot ... dot (lambda - q_(n+2))$
+
+  Но $P(D)(e^(mu x)x^(k+1))|_(x=x_0)=0=>Q(D+mu I)(1)=Q(mu)=0=>mu -$ корень кратности $s >= k+2$ для $P$.
+]
+
+== Дифференциальные уравнения n-го порядка с простыми коэффициентами. Случай кратных корней
+
+#theorem()[
+  Пусть $lambda_1, lambda_2, ..., lambda_n$ - попарно различные корни хар. уравнения. $chi (lambda)=0$ алгебраические кратности которых $k_1, k_2, ..., k)m$ соответствует (k_1+k_2+...+k_m=n). Тогда общее решение уравнения (1) имеет вид:
+
+  $ y(x)=limits(sum)_(j=1)^m P_j(x) e^(lambda_j x) $ (3)
+
+  где $P_j(x)$ - многочлен степени $<= k_j - 1$, j=1
+
+  Док-во:
+
+  Покажем, что любая функци вида (3) является решением (1).
+
+  Уранение (1) можно записать в следующем виде: $chi(D)(y(x))=0$.
+
+  Достаточно убедиться, что решениями являются следующие функции: $e^(mu x), x e^(mu x), ..., x^(k-1)e^(mu x)$, где $mu$ - корень $chi(lambda)=0)$ кратности $k$.
+
+  Тогда $chi(x)=zeta(lambda) dot (lambda - mu)^k$, $zeta(lambda)$ - многочлен, $zeta(mu)!=0$
+
+  $=> chi(D)(x^j e^(mu x)) = e^(mu x) chi(D + mu I)(x^j)=e^(mu x) zeta(D + mu I) circle D^k(x^j)$, $j <= k - 1 => D^k(x^j)=0 => e^(mu x) zeta(D + mu I) circle D^k(x^j) equiv 0$
+
+  т.е. $forall$ функция вида (3) - это решение (1).
+
+  Покажем что $forall $ решение (1) имеет вид (3).
+
+  Определим
+
+  $y_1(x)=e^(lambda_1 x), y_(k_1+2)(x)=x e^(lambda_2 x), ..., y_(k_1+...+k_m)(x)=e^(lambda_m x), ..., y_n(x)=x^m e^(lambda_m x)$.
+
+  Пусть $y(x)$ - решение уравнения (1) с начальными условиями $y(x_0)=y_0, y'(x_0)=y_0', ..., y^((n-1))(x_0)=y_0^(n-1)$
+
+  Покажем, что $exists c_1, c_2, ..., c_n in CC$ $y(x)=limits(sum)_(k=1)^n c_k y_k(x)$
+
+  $=> y^((j))(x_0)=limits(sum)_(k=1)^n c_k y_k^((j))(x_0)$, $j=0, 1, ..., n-1$ (4)
+
+  Матрица системы (4):
+
+  $M=...$
+
+  Пусть M - вырожденая $=> exists f_0, f_1, ..., f_(n-1) in CC$
+
+  $limits(sum)_(i=0)^(n-1)y_j^((i)) f_(x-1-i)=0 forall j=1, ..., n$
+
+  Рассмотрим многочлен $P(lambda)=limits(sum))(i=0)^(n-1) b_(n-1-i) lambda^i$
+]
